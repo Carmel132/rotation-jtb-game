@@ -32,4 +32,5 @@ using System;
 /// </summary>
 public class EventManagerProp : MonoBehaviour
 {
+
 }
