@@ -3,14 +3,6 @@ using System.Linq;
 using System.Xml.Linq;
 using UnityEngine;
 
-/*
- * === HOW GRAVITY WORKS ===
- * 1. There is a gravity factor in the PlayerConstants class
- * 2. Each frame, the player computes what its velocity will be as if it is in the air
- * 3. Then it raycasts down to what its position will be to determine if the way is free of obstacles
- * 4. If it is free, then it moves accordingly, otherwise it will snap to the nearest obstacle, as if it collided with it
- */
-
 /* ==== HOW PLAYER PHYSICS WORKS ====
  * 1. A velocity is computed under various conditions (like gravity)
  * 2. A set of key points (typically the edges) are raycasted from to where they would be under the computed velocity
@@ -41,14 +33,14 @@ internal class Physics
         return true;
     }
 
-    float computeDistanceToNearestObstacleOnAxis(Vector3 axis)
+    float computeDistanceToNearestObstacleOnAxis(Vector3 position, Vector3 axis)
     {
         float minDistance = Mathf.Infinity;
 
 
         foreach (var vertex in vertices)
         {
-            Util.UnfilteredRaycast2D(player.transform.position + vertex, axis, axis.magnitude, out List<RaycastHit2D> hits);
+            Util.DebugUnfilteredRaycast2D(position + vertex, axis, axis.magnitude, out List<RaycastHit2D> hits);
 
             if (!verifyObstacleCollision(hits)) { continue; }
 
@@ -60,13 +52,21 @@ internal class Physics
         return minDistance;
     }
 
-    float snapToObstacleOnAxis(Vector3 axis, float axialVelocity, out bool wasCollision)
+    float snapToObstacleOnAxis(Vector3 position, Vector3 axis, float axialVelocity, out bool wasCollision)
     {
-        float minDistance = computeDistanceToNearestObstacleOnAxis(axis);
+        float minDistance = computeDistanceToNearestObstacleOnAxis(position, axis);
+
+        if (minDistance < PlayerConstants.SKIN_WIDTH)
+        {
+            wasCollision = true;
+            return 0;
+        }
+
+
         if (minDistance <= Mathf.Abs(axialVelocity))
         {
             wasCollision = true;
-            return minDistance;
+            return Mathf.Sign(axialVelocity) * (Mathf.Max(minDistance, 0f) - PlayerConstants.SKIN_WIDTH);
         }
         wasCollision = false;
         return axialVelocity;
@@ -77,16 +77,33 @@ internal class Physics
         return Vector3.Dot(axis, velocity);
     }
 
+    void invokePlayerCollisionEvent(Vector3 axis)
+    {
+        EventManagerProp.onPlayerCollision(axis);
+    }
+
     public KinematicFrame computeNextStep(Vector3 velocity)
     {
 
+        Vector3 frameIndependentVelocity = velocity * Time.deltaTime;
+
         // Horizontal test
-        float xTrueVel = snapToObstacleOnAxis(Vector3.right, computeAxialVelocity(Vector3.right, velocity), out bool wasHorizontalCollision);
+        float xTrueVel = snapToObstacleOnAxis(player.transform.position, Vector3.right * Mathf.Sign(frameIndependentVelocity.x), computeAxialVelocity(Vector3.right, frameIndependentVelocity), out bool wasHorizontalCollision);
         float xNextVel = wasHorizontalCollision ? 0 : velocity.x;
 
+        if (wasHorizontalCollision)
+        {
+            invokePlayerCollisionEvent(Vector3.right * Mathf.Sign(velocity.x));
+        }
+
         // Vertical test
-        float yTrueVel = snapToObstacleOnAxis(Vector3.up, computeAxialVelocity(Vector3.up, velocity), out bool wasVerticalCollision);
+        float yTrueVel = snapToObstacleOnAxis(player.transform.position + new Vector3(xTrueVel, 0), Vector3.up * Mathf.Sign(frameIndependentVelocity.y), computeAxialVelocity(Vector3.up, frameIndependentVelocity), out bool wasVerticalCollision);
         float yNextVel = wasVerticalCollision ? 0 : velocity.y;
+
+        if (wasVerticalCollision)
+        {
+            invokePlayerCollisionEvent(Vector3.up * Mathf.Sign(velocity.y));
+        }
 
         KinematicFrame ret = new KinematicFrame
         {
@@ -109,23 +126,41 @@ public class PlayerControllerComp : MonoBehaviour
 
     float horizontalInput { set; get; }
     float verticalInput { set; get; }
+    bool jumpInput { set; get; }
+
+    [SerializeField]
+    bool isGrounded = false;
 
     Vector3 velocity { set; get; }
     Bounds bounds { set; get; }
     Physics physics { set; get; }
 
 
-
     void updateInputs()
     {
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
+        jumpInput = Input.GetButton("Jump");
     }
 
-
-    void ApplyGravity()
+    void applyGravity()
     {
         velocity += Vector3.down * PlayerConstants.GRAVITY_FACTOR;
+    }
+
+    void applyMovement()
+    {
+        velocity = new Vector3(horizontalInput * 4, velocity.y, velocity.z);
+    }
+
+    void applyJump()
+    {
+        if (jumpInput && isGrounded)
+        {
+            Debug.Log("Jumping!");
+            velocity += new Vector3(0, PlayerConstants.JUMP_FORCE);
+            isGrounded = false;
+        }
     }
 
     List<Vector3> generateVerticesFromBoxCollider(Vector2 extent)
@@ -140,22 +175,36 @@ public class PlayerControllerComp : MonoBehaviour
         return ret;
     }
 
+    void onPlayerCollision(Vector3 axis)
+    {
+        //Debug.Log(axis);
+
+        if (axis == Vector3.down)
+        {
+            isGrounded = true;
+            Debug.Log("Grounded!");
+        }
+    }
+
     void Start()
     {
         bounds = GetComponent<BoxCollider2D>().bounds;
         physics = new(gameObject, generateVerticesFromBoxCollider(bounds.extents));
+
+        EventManagerProp.PlayerCollision += onPlayerCollision;
     }
 
     void Update()
     {
         updateInputs();
-        ApplyGravity();
+        applyGravity();
+        applyMovement();
+        applyJump();
 
-        KinematicFrame kf = physics.computeNextStep(velocity * Time.deltaTime);
+        KinematicFrame kf = physics.computeNextStep(velocity);
 
         transform.position = kf.position;
         velocity = kf.velocity;
-
         
     }
 };

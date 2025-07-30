@@ -8,6 +8,7 @@ using System;
  * 3. The invocation function MUST call `{event name}.Invoke()` otherwise it wont actually call the delegates
  * 5. ????
  * 4. Profit
+ * 67. When adding an event make sure to meticulously document it
  */
 
 /*
@@ -32,5 +33,17 @@ using System;
 /// </summary>
 public class EventManagerProp : MonoBehaviour
 {
+    /// <summary>
+    /// Player collision event. Called every frame the player is colliding with something (this means the floor)
+    /// `axis` corresponds to the Vector3 directions (i.e. {1, 0, 0} == Vector3.right) and the direction
+    /// corresponds to the side of the player that is currently colliding
+    /// The X axis and Y axis will only ever be called once per frame each
+    /// </summary>
+    public static event Action<Vector3> PlayerCollision;
 
+
+    public static void onPlayerCollision(Vector3 axis)
+    {
+        PlayerCollision.Invoke(axis);
+    }
 }
