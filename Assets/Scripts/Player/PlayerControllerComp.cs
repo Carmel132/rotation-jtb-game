@@ -10,11 +10,17 @@ using UnityEngine;
  * 4. Otherwise, the shortest distance to an obstacle is taken an is proportionally applied to all other points, relative to the velocity
  */
 
+/// <summary>
+/// Holds velocity and position data
+/// </summary>
 internal struct KinematicFrame
 {
     public Vector3 position, velocity;
 }
 
+/// <summary>
+/// Class responsible for holding player physics logic
+/// </summary>
 internal class Physics
 {
     public GameObject player { get; }
@@ -23,6 +29,11 @@ internal class Physics
     /// </summary>
     public List<Vector3> vertices;
 
+    /// <summary>
+    /// Determines whether a list of raycast hits actually amounted to a hit
+    /// </summary>
+    /// <param name="hits">List of raycast hits</param>
+    /// <returns>Whether a foreign object was hit</returns>
     bool verifyObstacleCollision(List<RaycastHit2D> hits)
     {
         if (hits.Count == 0) { return false; }
@@ -33,6 +44,12 @@ internal class Physics
         return true;
     }
 
+    /// <summary>
+    /// Computes the distance to the nearest obstacle on a given axis
+    /// </summary>
+    /// <param name="position">The current center of mass of the player</param>
+    /// <param name="axis">The axis to test</param>
+    /// <returns>The distance of the nearest object. Returns `Mathf.Infinity` if no objects are found</returns>
     float computeDistanceToNearestObstacleOnAxis(Vector3 position, Vector3 axis)
     {
         float minDistance = Mathf.Infinity;
@@ -52,6 +69,14 @@ internal class Physics
         return minDistance;
     }
 
+    /// <summary>
+    /// Ensures the player does not move inside an obstacle
+    /// </summary>
+    /// <param name="position">Position of the player</param>
+    /// <param name="axis">Axis to test</param>
+    /// <param name="axialVelocity">Velocity of player on the given axis</param>
+    /// <param name="wasCollision">Out variable returning whether a collision occured</param>
+    /// <returns>The true velocity the player encountered on the axis</returns>
     float snapToObstacleOnAxis(Vector3 position, Vector3 axis, float axialVelocity, out bool wasCollision)
     {
         float minDistance = computeDistanceToNearestObstacleOnAxis(position, axis);
@@ -72,16 +97,31 @@ internal class Physics
         return axialVelocity;
     }
 
+    /// <summary>
+    /// Computes axial velocity
+    /// </summary>
+    /// <param name="axis">The given axis</param>
+    /// <param name="velocity">The absolute velocity in the standard basis</param>
+    /// <returns>The axial velocity</returns>
     float computeAxialVelocity(Vector3 axis, Vector3 velocity)
     {
         return Vector3.Dot(axis, velocity);
     }
 
+    /// <summary>
+    /// Calls the player collision event
+    /// </summary>
+    /// <param name="axis">The axis that was intersected</param>
     void invokePlayerCollisionEvent(Vector3 axis)
     {
         EventManagerProp.onPlayerCollision(axis);
     }
 
+    /// <summary>
+    /// Computes the next KinematicFrame
+    /// </summary>
+    /// <param name="velocity">The current velocity of the player</param>
+    /// <returns>The kinematic frame</returns>
     public KinematicFrame computeNextStep(Vector3 velocity)
     {
 
@@ -121,6 +161,9 @@ internal class Physics
     }
 }
 
+/// <summary>
+/// The player controller. It is 11:58pm. I cannot type anymore. Good luck solider
+/// </summary>
 public class PlayerControllerComp : MonoBehaviour
 {
 
