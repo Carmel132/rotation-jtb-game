@@ -1,0 +1,59 @@
+using UnityEngine;
+
+public class PlayerShoot : MonoBehaviour
+{
+    private Camera mainCamera;
+    public GameObject bulletPrefab; 
+    public Transform firePoint; 
+    public float bulletSpeed = 30f;
+    public float fireRate = 0.5f; 
+    public float spreadAngle = 10f;
+    public int bulletCount = 3; 
+    private float nextFireTime;
+
+    void Start()
+    {
+        mainCamera = Camera.main;
+    }
+
+    void Update()
+    {
+        
+        Vector3 mousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        mousePos.z = transform.position.z;
+        Vector3 direction = mousePos - transform.position;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0, 0, angle);
+
+        
+        if (Input.GetMouseButtonDown(0) && Time.time >= nextFireTime)
+        {
+            Shoot();
+            nextFireTime = Time.time + fireRate;
+        }
+    }
+
+    void Shoot()
+    {
+        
+        float baseAngle = transform.eulerAngles.z;
+
+        
+        float startAngle = -spreadAngle * (bulletCount - 1) / 2;
+
+        for (int i = 0; i < bulletCount; i++)
+        {
+            
+            float currentAngle = baseAngle + startAngle + (i * spreadAngle);
+            Quaternion bulletRotation = Quaternion.Euler(0, 0, currentAngle);
+
+            
+            GameObject bullet = Instantiate(bulletPrefab, firePoint.position, bulletRotation);
+
+            
+            Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
+            Vector2 direction = bulletRotation * Vector2.right; 
+            rb.linearVelocity = direction * bulletSpeed;
+        }
+    }
+}

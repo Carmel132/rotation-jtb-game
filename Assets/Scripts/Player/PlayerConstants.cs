@@ -8,7 +8,7 @@ public static class PlayerConstants
     /// <summary>
     /// The downward acceleration
     /// </summary>
-    public static float GRAVITY_FACTOR { get; } = 0.7f;
+    public static float GRAVITY_FACTOR { get; } = 0.1f;
     /// <summary>
     /// The width of the offset maintained between the player collider and other colliders.
     /// 
@@ -19,5 +19,6 @@ public static class PlayerConstants
     /// <summary>
     /// The force of the jump (?)
     /// </summary>
-    public static float JUMP_FORCE { get; } = 40f;
+    public static float JUMP_FORCE { get; } = 20f;
+    
 }

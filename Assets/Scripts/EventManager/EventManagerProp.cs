@@ -40,10 +40,17 @@ public class EventManagerProp : MonoBehaviour
     /// The X axis and Y axis will only ever be called once per frame each
     /// </summary>
     public static event Action<Vector3> PlayerCollision;
-
-
     public static void onPlayerCollision(Vector3 axis)
     {
         PlayerCollision.Invoke(axis);
+    }
+
+    /// <summary>
+    /// this dont work (code below)
+    /// </summary>
+    public static event Action<Vector3> PlayerShoot;
+    public static void onPlayerShoot(Vector3 axis)
+    {
+        PlayerShoot.Invoke(axis);
     }
 }
