@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Xml.Linq;
 using UnityEngine;
@@ -170,6 +171,7 @@ public class PlayerControllerComp : MonoBehaviour
     float horizontalInput { set; get; }
     float verticalInput { set; get; }
     bool jumpInput { set; get; }
+    bool dashInput { set; get; }
 
     [SerializeField]
     bool isGrounded = false;
@@ -178,12 +180,19 @@ public class PlayerControllerComp : MonoBehaviour
     Bounds bounds { set; get; }
     Physics physics { set; get; }
 
+    //Uh sorry carmel if this messes up ur code ngl - michael, 7/31
+    private Vector2 dashDirect;
+    private bool isDashing;
+    private bool canDash = true;
+    private float MaxS = 100;
+    private float MinS = 100;
 
     void updateInputs()
     {
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
         jumpInput = Input.GetButton("Jump");
+        dashInput = Input.GetButtonDown("Dash");
     }
 
     void applyGravity()
@@ -193,7 +202,7 @@ public class PlayerControllerComp : MonoBehaviour
 
     void applyMovement()
     {
-        velocity = new Vector3(horizontalInput * 4, velocity.y, velocity.z);
+        velocity = new Vector3(horizontalInput * 10, velocity.y, velocity.z);
     }
 
     void applyJump()
@@ -205,6 +214,40 @@ public class PlayerControllerComp : MonoBehaviour
             isGrounded = false;
         }
     }
+    //Michael, 7/31
+    private IEnumerator SDash()
+    {
+        yield return new WaitForSeconds(0.2f);
+        isDashing = false;
+    }
+    void applyDash()
+    {
+        if (dashInput && canDash)
+        {
+            Debug.Log("Dashing!");
+            isDashing = true;
+            canDash = false;
+            dashDirect = new Vector2(horizontalInput, verticalInput);
+            if (dashDirect == Vector2.zero)
+            {
+                dashDirect = new Vector2(transform.localScale.x, 0);
+            }
+            dashDirect.Normalize();
+            StartCoroutine(SDash());
+            return;
+        }
+        if (isDashing)
+        {
+            velocity += new Vector3(dashDirect.x * 0.5f, dashDirect.y * 0.24f) * PlayerConstants.DASHING_SPEED;
+            return;
+        }
+        if (isGrounded)
+        {
+            new WaitForSeconds(1f);
+            canDash = true;
+        }
+    }
+    
 
     List<Vector3> generateVerticesFromBoxCollider(Vector2 extent)
     {
@@ -220,12 +263,9 @@ public class PlayerControllerComp : MonoBehaviour
 
     void onPlayerCollision(Vector3 axis)
     {
-        //Debug.Log(axis);
-
         if (axis == Vector3.down)
         {
             isGrounded = true;
-            Debug.Log("Grounded!");
         }
     }
 
@@ -241,13 +281,16 @@ public class PlayerControllerComp : MonoBehaviour
     {
         updateInputs();
         applyGravity();
-        applyMovement();
+        if (!isDashing)
+        {
+            applyMovement();
+        }
         applyJump();
+        applyDash();
 
         KinematicFrame kf = physics.computeNextStep(velocity);
 
         transform.position = kf.position;
         velocity = kf.velocity;
-        
     }
 };
