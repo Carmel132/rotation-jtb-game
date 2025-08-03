@@ -10,6 +10,8 @@ public class PlayerShoot : MonoBehaviour
     public float spreadAngle = 10f;
     public int bulletCount = 3; 
     private float nextFireTime;
+    public GameObject player;
+    public GameObject shotgunSprite;
 
     void Start()
     {
@@ -25,9 +27,20 @@ public class PlayerShoot : MonoBehaviour
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, angle);
 
-        
+        if (Mathf.Abs(transform.rotation[3]) >= Mathf.Abs(transform.rotation[2]) && player.transform.localScale.x < 0) //player facing left, gun facing right
+        {
+            player.transform.localScale = new Vector3(player.transform.localScale.x * -1, player.transform.localScale.y, player.transform.localScale.z); //flip player
+            shotgunSprite.transform.localEulerAngles = new Vector3(0,0,0); //edit rotation of gun sprite so looks correct
+        }
+        if (Mathf.Abs(transform.rotation[3]) < Mathf.Abs(transform.rotation[2]) && player.transform.localScale.x > 0) //player facing right, gun facing left
+        {
+            player.transform.localScale = new Vector3(player.transform.localScale.x * -1, player.transform.localScale.y, player.transform.localScale.z);
+            shotgunSprite.transform.localEulerAngles = new Vector3(0, 0, 180);
+        }
+
         if (Input.GetMouseButtonDown(0) && Time.time >= nextFireTime)
         {
+            
             Shoot();
             nextFireTime = Time.time + fireRate;
         }
