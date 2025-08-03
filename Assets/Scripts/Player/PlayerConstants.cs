@@ -15,7 +15,7 @@ public static class PlayerConstants
     /// This is done so the vertices of the player are never absorbed by other colliders and nullify
     /// collision logic
     /// </summary>
-    public static float SKIN_WIDTH { get; } = 0.03f;
+    public static float SKIN_WIDTH { get; } = 0.001f;
     /// <summary>
     /// The force of the jump (?)
     /// </summary>

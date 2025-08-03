@@ -3,6 +3,9 @@ using System.Linq;
 using System.Xml.Linq;
 using UnityEngine;
 
+
+//^^^needed
+
 /* ==== HOW PLAYER PHYSICS WORKS ====
  * 1. A velocity is computed under various conditions (like gravity)
  * 2. A set of key points (typically the edges) are raycasted from to where they would be under the computed velocity
@@ -166,11 +169,29 @@ internal class Physics
 /// </summary>
 public class PlayerControllerComp : MonoBehaviour
 {
+    //animation stuff vvv
+    public Animator animator;
+
+    
+    public RuntimeAnimatorController baseController;
+    public RuntimeAnimatorController timController;
+    public RuntimeAnimatorController kyleController;
+
+    public Sprite[] shotguns;
+
+    public SpriteRenderer shotgunSprite;
+
+    //animation stuff ^^^
+
+    //for new button vvv
+    bool switchInput { set; get; }
+    int currentSkin = 0;
 
     float horizontalInput { set; get; }
     float verticalInput { set; get; }
     bool jumpInput { set; get; }
 
+    
     [SerializeField]
     bool isGrounded = false;
 
@@ -184,16 +205,20 @@ public class PlayerControllerComp : MonoBehaviour
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
         jumpInput = Input.GetButton("Jump");
+
+        switchInput = Input.GetButtonDown("SwitchSkin");
     }
 
     void applyGravity()
     {
         velocity += Vector3.down * PlayerConstants.GRAVITY_FACTOR;
+        
     }
 
     void applyMovement()
     {
-        velocity = new Vector3(horizontalInput * 4, velocity.y, velocity.z);
+        velocity = new Vector3(horizontalInput * 10, velocity.y, velocity.z);
+        
     }
 
     void applyJump()
@@ -203,7 +228,47 @@ public class PlayerControllerComp : MonoBehaviour
             Debug.Log("Jumping!");
             velocity += new Vector3(0, PlayerConstants.JUMP_FORCE);
             isGrounded = false;
+            
         }
+    }
+
+    void animate()
+    {
+        //sets variables to trigger animations :thumbs_up:
+        animator.SetFloat("Speed", Mathf.Abs(velocity.x));
+        animator.SetBool("Grounded", isGrounded);
+        animator.SetFloat("HSpeed", velocity.y); //this is horizontal speed, animates jump/fall
+
+    }
+
+    void switchSkin()
+    {
+        //allows for swapping skins
+        if (switchInput)
+        {
+            currentSkin += 1;
+        }
+
+        //when pressing button, increases currentSkin and changes animator and shotgun
+        //to add more, make a new case, new controller variable, and add shotgun skin to array
+        switch(currentSkin)
+        {
+            case 1:
+                animator.runtimeAnimatorController = timController;
+                shotgunSprite.sprite = shotguns[1];
+                break;
+            case 2:
+                animator.runtimeAnimatorController = kyleController;
+                shotgunSprite.sprite = shotguns[2];
+                break;
+            default:
+                animator.runtimeAnimatorController = baseController;
+                shotgunSprite.sprite = shotguns[0];
+                currentSkin = 0;
+                break;
+
+        }
+
     }
 
     List<Vector3> generateVerticesFromBoxCollider(Vector2 extent)
@@ -225,7 +290,7 @@ public class PlayerControllerComp : MonoBehaviour
         if (axis == Vector3.down)
         {
             isGrounded = true;
-            Debug.Log("Grounded!");
+            //Debug.Log("Grounded!");
         }
     }
 
@@ -248,6 +313,9 @@ public class PlayerControllerComp : MonoBehaviour
 
         transform.position = kf.position;
         velocity = kf.velocity;
-        
+
+        animate();
+        switchSkin();
+
     }
 };
