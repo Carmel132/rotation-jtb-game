@@ -23,5 +23,5 @@ public static class PlayerConstants
     /// <summary>
     /// The Speed of dashing :thumbs up:
     /// </summary>
-    public static float DASHING_SPEED { get; } = 1.25f;
+    public static float DASHING_SPEED { get; } = 25;
 }

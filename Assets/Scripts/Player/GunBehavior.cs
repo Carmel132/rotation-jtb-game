@@ -31,11 +31,13 @@ public class PlayerShoot : MonoBehaviour
         {
             player.transform.localScale = new Vector3(player.transform.localScale.x * -1, player.transform.localScale.y, player.transform.localScale.z); //flip player
             shotgunSprite.transform.localEulerAngles = new Vector3(0,0,0); //edit rotation of gun sprite so looks correct
+            //firePoint.transform.localEulerAngles = new Vector3(0, 0, 0); //edit rotation of gun sprite so looks correct
         }
         if (Mathf.Abs(transform.rotation[3]) < Mathf.Abs(transform.rotation[2]) && player.transform.localScale.x > 0) //player facing right, gun facing left
         {
             player.transform.localScale = new Vector3(player.transform.localScale.x * -1, player.transform.localScale.y, player.transform.localScale.z);
             shotgunSprite.transform.localEulerAngles = new Vector3(0, 0, 180);
+            //firePoint.transform.localEulerAngles = new Vector3(0, 0, 180);
         }
 
         if (Input.GetMouseButtonDown(0) && Time.time >= nextFireTime)
@@ -45,6 +47,9 @@ public class PlayerShoot : MonoBehaviour
             GameManager.gm.PlayerShootSFX();
             nextFireTime = Time.time + fireRate;
         }
+
+        Debug.DrawLine(shotgunSprite.transform.position, firePoint.transform.position, Color.red);
+
     }
 
     void Shoot()

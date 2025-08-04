@@ -195,6 +195,14 @@ internal class Physics
     }
 }
 
+
+enum PlayerStates
+{
+    Neutral,
+    Dashing,
+    Jumping
+}
+
 /// <summary>
 /// The player controller. It is 11:58pm. I cannot type anymore. Good luck solider
 /// </summary>
@@ -212,6 +220,8 @@ public class PlayerControllerComp : MonoBehaviour
     public Vector3 velocity { private set; get; }
     Bounds bounds { set; get; }
     Physics physics { set; get; }
+    StateMachine<PlayerStates> stateMachine { get; set; }
+    FixedTimer dashTimer, dashCooldownTimer;
 
     //Uh sorry carmel if this messes up ur code ngl - michael, 7/31
     private Vector2 dashDirect;
@@ -219,6 +229,45 @@ public class PlayerControllerComp : MonoBehaviour
     private bool canDash = true;
     private float MaxS = 100;
     private float MinS = 100;
+
+    void buildStateMachine()
+    {
+        stateMachine = new StateMachine<PlayerStates>();
+
+        stateMachine.addNode(PlayerStates.Neutral, null, null, () =>
+        {
+            applyGravity();
+            applyMovement();
+
+            if (dashCooldownTimer.timePassed)
+            {
+                canDash = true;
+            }
+        });
+
+        stateMachine.setCurrentNode(PlayerStates.Neutral);
+
+        stateMachine.addNode(PlayerStates.Dashing, () =>
+        {
+            isDashing = true;
+            dashTimer.reset();
+            dashDirect = new Vector2(horizontalInput, verticalInput);
+
+        }, () => 
+        {
+            isDashing = false;
+            dashCooldownTimer.reset();
+        }, () =>
+        {
+            velocity = new Vector3(dashDirect.x, dashDirect.y).normalized * PlayerConstants.DASHING_SPEED;
+
+        });
+
+        stateMachine.addNode(PlayerStates.Jumping, applyJump, null, null);
+
+        stateMachine.addArrow(PlayerStates.Neutral, PlayerStates.Dashing, () => canDash && dashInput && dashCooldownTimer.timePassed);
+        stateMachine.addArrow(PlayerStates.Dashing, PlayerStates.Neutral, () => dashTimer.timePassed);
+    }
 
     void updateInputs()
     {
@@ -315,19 +364,16 @@ public class PlayerControllerComp : MonoBehaviour
         physics = new(gameObject, generateVerticesFromBoxCollider(bounds.extents));
 
         EventManagerProp.PlayerGrounded += isPlayerGrounded;
+        dashTimer = new(0.3f);
+        dashCooldownTimer = new(0.5f);
+        buildStateMachine();
     }
 
     void Update()
     {
         updateInputs();
-        applyGravity();
-        if (!isDashing)
-        {
-            applyMovement();
-        }
-        applyJump();
-        applyDash();
 
+        stateMachine.loop();
         KinematicFrame kf = physics.computeNextStep(velocity);
 
         applyKinematicFrame(kf);
