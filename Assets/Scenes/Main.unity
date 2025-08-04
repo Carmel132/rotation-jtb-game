@@ -303,7 +303,7 @@ GameObject:
   - component: {fileID: 930512991}
   - component: {fileID: 930512994}
   - component: {fileID: 930512993}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -945,6 +945,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1618768418}
   - component: {fileID: 1618768416}
+  - component: {fileID: 1618768420}
   - component: {fileID: 1618768415}
   - component: {fileID: 1618768419}
   m_Layer: 0
@@ -1021,7 +1022,6 @@ MonoBehaviour:
   - {fileID: -7559304056706931927, guid: c18c51951d6fbfd49a7e639b5f743c65, type: 3}
   - {fileID: 5891625583243845889, guid: 13d06301d4ab39948ae04b8a7625e16c, type: 3}
   shotgunSprite: {fileID: 1935637488}
-  isGrounded: 0
 --- !u!4 &1618768418
 Transform:
   m_ObjectHideFlags: 0
@@ -1094,6 +1094,27 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1618768420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1618768414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4877b49efcf9eee4b950c943dfcd497c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 1327139442}
+  baseController: {fileID: 9100000, guid: f59d2967960df30438a4046aba78e226, type: 2}
+  timController: {fileID: 9100000, guid: 3121ed9687e4587448608d79c20f617e, type: 2}
+  kyleController: {fileID: 9100000, guid: 248e10175b5995148b52edc7d859245a, type: 2}
+  shotguns:
+  - {fileID: 1275589539659018210, guid: fd51804b78d94d04aa4fc34d9142c6ac, type: 3}
+  - {fileID: -7559304056706931927, guid: c18c51951d6fbfd49a7e639b5f743c65, type: 3}
+  - {fileID: 5891625583243845889, guid: 13d06301d4ab39948ae04b8a7625e16c, type: 3}
+  shotgunSprite: {fileID: 1935637488}
 --- !u!1 &1696573852
 GameObject:
   m_ObjectHideFlags: 0

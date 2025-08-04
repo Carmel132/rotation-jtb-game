@@ -155,8 +155,6 @@ internal class Physics
             invokePlayerCollisionEvent(collisionAxis);
         }
 
-        Debug.Log($"{wasVerticalCollision}, {velocity.y}");
-
         invokePlayerGroundedEvent(wasVerticalCollision && velocity.y < 0);
 
         KinematicFrame ret = new KinematicFrame
@@ -205,9 +203,9 @@ public class PlayerControllerComp : MonoBehaviour
 
     
     [SerializeField]
-    bool isGrounded = false;
+    public bool isGrounded { private set; get; } = false;
 
-    Vector3 velocity { set; get; }
+    public Vector3 velocity { private set; get; }
     Bounds bounds { set; get; }
     Physics physics { set; get; }
 
@@ -224,7 +222,6 @@ public class PlayerControllerComp : MonoBehaviour
         verticalInput = Input.GetAxis("Vertical");
         jumpInput = Input.GetButton("Jump");
 
-        switchInput = Input.GetButtonDown("SwitchSkin");
 
         dashInput = Input.GetButtonDown("Dash");
     }
@@ -285,47 +282,6 @@ public class PlayerControllerComp : MonoBehaviour
             canDash = true;
         }
     }
-    
-
-    void animate()
-    {
-        //sets variables to trigger animations :thumbs_up:
-        animator.SetFloat("Speed", Mathf.Abs(velocity.x));
-        animator.SetBool("Grounded", isGrounded);
-        animator.SetFloat("HSpeed", velocity.y); //this is horizontal speed, animates jump/fall
-
-    }
-
-    void switchSkin()
-    {
-        //allows for swapping skins
-        if (switchInput)
-        {
-            currentSkin += 1;
-            currentSkin = currentSkin % 3;
-        }
-
-        //when pressing button, increases currentSkin and changes animator and shotgun
-        //to add more, make a new case, new controller variable, and add shotgun skin to array
-        switch(currentSkin)
-        {
-            case 1:
-                animator.runtimeAnimatorController = timController;
-                shotgunSprite.sprite = shotguns[1];
-                break;
-            case 2:
-                animator.runtimeAnimatorController = kyleController;
-                shotgunSprite.sprite = shotguns[2];
-                break;
-            default:
-                animator.runtimeAnimatorController = baseController;
-                shotgunSprite.sprite = shotguns[0];
-                // currentSkin = 0;
-                break;
-
-        }
-
-    }
 
     List<Vector3> generateVerticesFromBoxCollider(Vector2 extent)
     {
@@ -339,18 +295,15 @@ public class PlayerControllerComp : MonoBehaviour
         return ret;
     }
 
-    void onPlayerCollision(Vector3 axis)
-    {
-        if (axis == Vector3.down)
-        {
-            isGrounded = true;
-
-        }
-    }
-
     void isPlayerGrounded(bool grounded)
     {
         isGrounded = grounded;
+    }
+
+    void applyKinematicFrame(KinematicFrame kf)
+    {
+        transform.position = kf.position;
+        velocity = kf.velocity;
     }
 
     void Start()
@@ -358,7 +311,6 @@ public class PlayerControllerComp : MonoBehaviour
         bounds = GetComponent<BoxCollider2D>().bounds;
         physics = new(gameObject, generateVerticesFromBoxCollider(bounds.extents));
 
-        //EventManagerProp.PlayerCollision += onPlayerCollision;
         EventManagerProp.PlayerGrounded += isPlayerGrounded;
 
     }
@@ -376,10 +328,7 @@ public class PlayerControllerComp : MonoBehaviour
 
         KinematicFrame kf = physics.computeNextStep(velocity);
 
-        transform.position = kf.position;
-        velocity = kf.velocity;
-        animate();
-        switchSkin();
+        applyKinematicFrame(kf);
 
     }
 };
