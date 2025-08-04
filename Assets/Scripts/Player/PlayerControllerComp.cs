@@ -101,7 +101,7 @@ internal class Physics
     {
         float minDistance = computeDistanceToNearestObstacleOnAxisByCollider(position, axis) / 2;//computeDistanceToNearestObstacleOnAxis(position, axis);
         Debug.DrawRay(player.transform.position, axis.normalized * minDistance);
-        Debug.Log($"ray: {minDistance}, colld: {computeDistanceToNearestObstacleOnAxisByCollider(position, axis)/2}");
+        //Debug.Log($"ray: {minDistance}, colld: {computeDistanceToNearestObstacleOnAxisByCollider(position, axis)/2}");
 
         if (minDistance < PlayerConstants.SKIN_WIDTH)
         {
@@ -315,7 +315,6 @@ public class PlayerControllerComp : MonoBehaviour
         physics = new(gameObject, generateVerticesFromBoxCollider(bounds.extents));
 
         EventManagerProp.PlayerGrounded += isPlayerGrounded;
-
     }
 
     void Update()
