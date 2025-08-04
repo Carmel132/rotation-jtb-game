@@ -235,6 +235,7 @@ public class PlayerControllerComp : MonoBehaviour
         if (jumpInput && isGrounded)
         {
             Debug.Log("Jumping!");
+            GameManager.gm.PlayerJumpSFX();
             velocity += new Vector3(0, PlayerConstants.JUMP_FORCE);
             isGrounded = false;
             
@@ -251,6 +252,7 @@ public class PlayerControllerComp : MonoBehaviour
         if (dashInput && canDash)
         {
             Debug.Log("Dashing!");
+            GameManager.gm.PlayerDashSFX();
             isDashing = true;
             canDash = false;
             dashDirect = new Vector2(horizontalInput, verticalInput);
@@ -290,6 +292,7 @@ public class PlayerControllerComp : MonoBehaviour
         if (switchInput)
         {
             currentSkin += 1;
+            currentSkin = currentSkin % 3;
         }
 
         //when pressing button, increases currentSkin and changes animator and shotgun
@@ -307,7 +310,7 @@ public class PlayerControllerComp : MonoBehaviour
             default:
                 animator.runtimeAnimatorController = baseController;
                 shotgunSprite.sprite = shotguns[0];
-                currentSkin = 0;
+                // currentSkin = 0;
                 break;
 
         }

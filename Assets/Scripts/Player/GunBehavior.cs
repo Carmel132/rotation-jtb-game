@@ -42,6 +42,7 @@ public class PlayerShoot : MonoBehaviour
         {
             
             Shoot();
+            GameManager.gm.PlayerShootSFX();
             nextFireTime = Time.time + fireRate;
         }
     }
@@ -56,17 +57,18 @@ public class PlayerShoot : MonoBehaviour
 
         for (int i = 0; i < bulletCount; i++)
         {
-            
+
             float currentAngle = baseAngle + startAngle + (i * spreadAngle);
             Quaternion bulletRotation = Quaternion.Euler(0, 0, currentAngle);
 
-            
+
             GameObject bullet = Instantiate(bulletPrefab, firePoint.position, bulletRotation);
 
-            
-            Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
+            Vector3 bulletVelocity = bulletRotation * Vector2.right * bulletSpeed;
+           
+            /* Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
             Vector2 direction = bulletRotation * Vector2.right; 
-            rb.linearVelocity = direction * bulletSpeed;
+            rb.linearVelocity = direction * bulletSpeed; */
         }
     }
 }
