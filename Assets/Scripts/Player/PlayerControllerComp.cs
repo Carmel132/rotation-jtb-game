@@ -32,6 +32,8 @@ internal class Physics
     /// List of vertices relative to center-of-mass of game object
     /// </summary>
     public List<Vector3> vertices;
+    public Collider2D collider;
+
 
     /// <summary>
     /// Determines whether a list of raycast hits actually amounted to a hit
@@ -58,11 +60,12 @@ internal class Physics
     {
         float minDistance = Mathf.Infinity;
 
-
+        //List<RaycastHit2D> hits;
         foreach (var vertex in vertices)
         {
+            //hits = new() ;
             Util.DebugUnfilteredRaycast2D(position + vertex, axis, axis.magnitude, out List<RaycastHit2D> hits);
-
+            //collider.Cast(axis, hits, axis.magnitude);
             if (!verifyObstacleCollision(hits)) { continue; }
 
             minDistance = Mathf.Min(minDistance, hits
@@ -70,6 +73,19 @@ internal class Physics
                 .Min(a => a.distance));
         }
 
+        return minDistance;
+    }
+
+    float computeDistanceToNearestObstacleOnAxisByCollider(Vector3 position, Vector3 axis)
+    {
+        float minDistance = Mathf.Infinity;
+        List<RaycastHit2D> hits = new();
+        collider.Cast(position, 0, axis, hits, axis.magnitude);
+        if (!verifyObstacleCollision(hits)) { return minDistance; }
+        minDistance = Mathf.Min(minDistance, hits
+                .Where(hit => !GameObject.ReferenceEquals(player, hit.transform.gameObject))
+                .Min(a => a.distance));
+        
         return minDistance;
     }
 
@@ -83,7 +99,9 @@ internal class Physics
     /// <returns>The true velocity the player encountered on the axis</returns>
     float snapToObstacleOnAxis(Vector3 position, Vector3 axis, float axialVelocity, out bool wasCollision)
     {
-        float minDistance = computeDistanceToNearestObstacleOnAxis(position, axis);
+        float minDistance = computeDistanceToNearestObstacleOnAxisByCollider(position, axis) / 2;//computeDistanceToNearestObstacleOnAxis(position, axis);
+        Debug.DrawRay(player.transform.position, axis.normalized * minDistance);
+        Debug.Log($"ray: {minDistance}, colld: {computeDistanceToNearestObstacleOnAxisByCollider(position, axis)/2}");
 
         if (minDistance < PlayerConstants.SKIN_WIDTH)
         {
@@ -170,6 +188,7 @@ internal class Physics
     {
         this.player = player;
         this.vertices = vertices;
+        this.collider = player.GetComponent<Collider2D>();
     }
 }
 
@@ -178,24 +197,6 @@ internal class Physics
 /// </summary>
 public class PlayerControllerComp : MonoBehaviour
 {
-    //animation stuff vvv
-    public Animator animator;
-
-    
-    public RuntimeAnimatorController baseController;
-    public RuntimeAnimatorController timController;
-    public RuntimeAnimatorController kyleController;
-
-    public Sprite[] shotguns;
-
-    public SpriteRenderer shotgunSprite;
-
-    //animation stuff ^^^
-
-    //for new button vvv
-    bool switchInput { set; get; }
-    int currentSkin = 0;
-
     float horizontalInput { set; get; }
     float verticalInput { set; get; }
     bool jumpInput { set; get; }
@@ -245,7 +246,6 @@ public class PlayerControllerComp : MonoBehaviour
             GameManager.gm.PlayerJumpSFX();
             velocity += new Vector3(0, PlayerConstants.JUMP_FORCE);
             isGrounded = false;
-            
         }
     }
     //Michael, 7/31
