@@ -155,7 +155,7 @@ internal class Physics
         Vector3 frameIndependentVelocity = velocity * Time.deltaTime;
 
         // Horizontal test
-        float xTrueVel = snapToObstacleOnAxis(player.transform.position, Vector3.right * Mathf.Sign(frameIndependentVelocity.x), computeAxialVelocity(Vector3.right, frameIndependentVelocity), out bool wasHorizontalCollision);
+        float xTrueVel = snapToObstacleOnAxis(player.transform.position, Vector3.right * Mathf.Sign(frameIndependentVelocity.x), computeAxialVelocity(Vector3.right, velocity) * Time.deltaTime, out bool wasHorizontalCollision);
         float xNextVel = wasHorizontalCollision ? 0 : velocity.x;
 
         if (wasHorizontalCollision)
@@ -164,7 +164,7 @@ internal class Physics
         }
 
         // Vertical test
-        float yTrueVel = snapToObstacleOnAxis(player.transform.position + new Vector3(xTrueVel, 0), Vector3.up * Mathf.Sign(frameIndependentVelocity.y), computeAxialVelocity(Vector3.up, frameIndependentVelocity), out bool wasVerticalCollision);
+        float yTrueVel = snapToObstacleOnAxis(player.transform.position + new Vector3(xTrueVel, 0), Vector3.up * Mathf.Sign(frameIndependentVelocity.y), computeAxialVelocity(Vector3.up, velocity) * Time.deltaTime, out bool wasVerticalCollision);
         float yNextVel = wasVerticalCollision ? 0 : velocity.y;
 
         if (wasVerticalCollision)
@@ -210,6 +210,10 @@ public class PlayerControllerComp : MonoBehaviour
 {
     float horizontalInput { set; get; }
     float verticalInput { set; get; }
+
+    float horizontalInputRaw { set; get; }
+    float verticalInputRaw { set; get; }
+
     bool jumpInput { set; get; }
     bool dashInput { set; get; }
 
@@ -221,14 +225,14 @@ public class PlayerControllerComp : MonoBehaviour
     Bounds bounds { set; get; }
     Physics physics { set; get; }
     StateMachine<PlayerStates> stateMachine { get; set; }
-    FixedTimer dashTimer, dashCooldownTimer;
+
+    FixedTimer jumpGroundedCooldown;
 
     //Uh sorry carmel if this messes up ur code ngl - michael, 7/31
-    private Vector2 dashDirect;
-    private bool isDashing;
-    private bool canDash = true;
-    private float MaxS = 100;
-    private float MinS = 100;
+    FixedTimer dashTimer, dashCooldownTimer;
+    Vector2 dashDirect;
+    bool canDash = true;
+    bool hitGroundSinceDash = true;
 
     void buildStateMachine()
     {
@@ -238,34 +242,30 @@ public class PlayerControllerComp : MonoBehaviour
         {
             applyGravity();
             applyMovement();
-
-            if (dashCooldownTimer.timePassed)
-            {
-                canDash = true;
-            }
         });
 
         stateMachine.setCurrentNode(PlayerStates.Neutral);
 
         stateMachine.addNode(PlayerStates.Dashing, () =>
         {
-            isDashing = true;
             dashTimer.reset();
-            dashDirect = new Vector2(horizontalInput, verticalInput);
+            dashDirect = new Vector2(horizontalInputRaw, verticalInputRaw);
+            applyDash();
+            GameManager.gm.PlayerDashSFX();
 
         }, () => 
         {
-            isDashing = false;
             dashCooldownTimer.reset();
-        }, () =>
-        {
-            velocity = new Vector3(dashDirect.x, dashDirect.y).normalized * PlayerConstants.DASHING_SPEED;
-
-        });
+            velocity = Vector3.zero;
+            hitGroundSinceDash = false;
+        }, null);
 
         stateMachine.addNode(PlayerStates.Jumping, applyJump, null, null);
 
-        stateMachine.addArrow(PlayerStates.Neutral, PlayerStates.Dashing, () => canDash && dashInput && dashCooldownTimer.timePassed);
+        stateMachine.addArrow(PlayerStates.Neutral, PlayerStates.Jumping, () => jumpInput && isGrounded && jumpGroundedCooldown.timePassed);
+        stateMachine.addArrow(PlayerStates.Jumping, PlayerStates.Neutral, () => true);
+
+        stateMachine.addArrow(PlayerStates.Neutral, PlayerStates.Dashing, () => hitGroundSinceDash && dashInput && dashCooldownTimer.timePassed);
         stateMachine.addArrow(PlayerStates.Dashing, PlayerStates.Neutral, () => dashTimer.timePassed);
     }
 
@@ -273,8 +273,11 @@ public class PlayerControllerComp : MonoBehaviour
     {
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
-        jumpInput = Input.GetButton("Jump");
 
+        horizontalInputRaw = Input.GetAxisRaw("Horizontal");
+        verticalInputRaw = Input.GetAxisRaw("Vertical");
+
+        jumpInput = Input.GetButton("Jump");
 
         dashInput = Input.GetButtonDown("Dash");
     }
@@ -290,51 +293,23 @@ public class PlayerControllerComp : MonoBehaviour
         velocity = new Vector3(horizontalInput * 10, velocity.y, velocity.z);
     }
 
+    void applyDash()
+    {
+        velocity = new Vector3(dashDirect.x, dashDirect.y).normalized * PlayerConstants.DASHING_SPEED;
+    }
+
     void applyJump()
     {
         if (jumpInput && isGrounded)
         {
             Debug.Log("Jumping!");
             GameManager.gm.PlayerJumpSFX();
-            velocity += new Vector3(0, PlayerConstants.JUMP_FORCE);
+            velocity = new Vector3(velocity.x, PlayerConstants.JUMP_FORCE, velocity.z);
             isGrounded = false;
         }
     }
     //Michael, 7/31
-    private IEnumerator SDash()
-    {
-        yield return new WaitForSeconds(0.2f);
-        isDashing = false;
-    }
-    void applyDash()
-    {
-        if (dashInput && canDash)
-        {
-            Debug.Log("Dashing!");
-            GameManager.gm.PlayerDashSFX();
-            isDashing = true;
-            canDash = false;
-            dashDirect = new Vector2(horizontalInput, verticalInput);
-            if (dashDirect == Vector2.zero)
-            {
-                dashDirect = new Vector2(transform.localScale.x, 0);
-            }
-            dashDirect.Normalize();
-            StartCoroutine(SDash());
-            return;
-        }
-        if (isDashing)
-        {
-            velocity += new Vector3(dashDirect.x * 0.5f, dashDirect.y * 0.24f) * PlayerConstants.DASHING_SPEED;
-            return;
-        }
-        if (isGrounded)
-        {
-            new WaitForSeconds(1f);
-            canDash = true;
-        }
-    }
-
+    //All that is left of what we were is what we have become - someone wise, probably
     List<Vector3> generateVerticesFromBoxCollider(Vector2 extent)
     {
         List<Vector3> ret = new()
@@ -349,7 +324,12 @@ public class PlayerControllerComp : MonoBehaviour
 
     void isPlayerGrounded(bool grounded)
     {
+        if (!isGrounded && grounded)
+        {
+            jumpGroundedCooldown.reset();
+        }
         isGrounded = grounded;
+        hitGroundSinceDash |= grounded;
     }
 
     void applyKinematicFrame(KinematicFrame kf)
@@ -358,14 +338,19 @@ public class PlayerControllerComp : MonoBehaviour
         velocity = kf.velocity;
     }
 
+    void checkDashCooldownOver()
+    {
+    }
+
     void Start()
     {
         bounds = GetComponent<BoxCollider2D>().bounds;
         physics = new(gameObject, generateVerticesFromBoxCollider(bounds.extents));
 
         EventManagerProp.PlayerGrounded += isPlayerGrounded;
-        dashTimer = new(0.3f);
-        dashCooldownTimer = new(0.5f);
+        dashTimer = new(PlayerConstants.DASHING_DURATION);
+        dashCooldownTimer = new(PlayerConstants.DASHING_COOLDOWN);
+        jumpGroundedCooldown = new(0.1f);
         buildStateMachine();
     }
 
@@ -373,6 +358,7 @@ public class PlayerControllerComp : MonoBehaviour
     {
         updateInputs();
 
+        checkDashCooldownOver();
         stateMachine.loop();
         KinematicFrame kf = physics.computeNextStep(velocity);
 
