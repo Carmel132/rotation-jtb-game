@@ -175,6 +175,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9126807072062549303, guid: 85ff57ba438a2b542bd718b684b0ed41, type: 3}
+      propertyPath: m_ExcludeLayers.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: -3960051989284282878, guid: 85ff57ba438a2b542bd718b684b0ed41, type: 3}
     m_RemovedGameObjects: []
@@ -192,7 +196,7 @@ GameObject:
   - component: {fileID: 309325537}
   - component: {fileID: 309325539}
   - component: {fileID: 309325538}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: shotgun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -614,7 +618,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1039373952}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: shootpoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -646,7 +650,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1261885145}
   - component: {fileID: 1261885146}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: playersfx
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -823,7 +827,7 @@ GameObject:
   - component: {fileID: 1327139441}
   - component: {fileID: 1327139442}
   - component: {fileID: 1327139443}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: playersprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -949,7 +953,7 @@ GameObject:
   - component: {fileID: 1618768415}
   - component: {fileID: 1618768419}
   - component: {fileID: 1618768421}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -1118,7 +1122,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1618768414}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -1136,7 +1140,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!1 &1696573852
 GameObject:
   m_ObjectHideFlags: 0
@@ -1244,7 +1248,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1935637487}
   - component: {fileID: 1935637488}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: shotgunsprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}

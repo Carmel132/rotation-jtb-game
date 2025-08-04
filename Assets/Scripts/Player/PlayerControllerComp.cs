@@ -33,7 +33,7 @@ internal class Physics
     /// </summary>
     public List<Vector3> vertices;
     public Collider2D collider;
-
+    static ContactFilter2D collisionFilter;
 
     /// <summary>
     /// Determines whether a list of raycast hits actually amounted to a hit
@@ -80,7 +80,7 @@ internal class Physics
     {
         float minDistance = Mathf.Infinity;
         List<RaycastHit2D> hits = new();
-        collider.Cast(position, 0, axis, hits, axis.magnitude);
+        collider.Cast(position, 0, axis, collisionFilter, hits, axis.magnitude);
         if (!verifyObstacleCollision(hits)) { return minDistance; }
         minDistance = Mathf.Min(minDistance, hits
                 .Where(hit => !GameObject.ReferenceEquals(player, hit.transform.gameObject))
@@ -189,6 +189,9 @@ internal class Physics
         this.player = player;
         this.vertices = vertices;
         this.collider = player.GetComponent<Collider2D>();
+
+        collisionFilter = new();
+        collisionFilter.useTriggers = false;
     }
 }
 
