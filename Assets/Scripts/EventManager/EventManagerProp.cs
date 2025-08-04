@@ -5,7 +5,7 @@ using System;
  * === HOW TO ADD EVENTS ===
  * 1. Add a `public static event Action {event name};` field to the `EventManagerProp` class
  * 2. Add an invocation function `public static void on{event name}(params...)`
- * 3. The invocation function MUST call `{event name}.Invoke()` otherwise it wont actually call the delegates
+ * 3. The invocation function MUST call `{event name}?.Invoke()` otherwise it wont actually call the delegates
  * 5. ????
  * 4. Profit
  * 67. When adding an event make sure to meticulously document it
@@ -42,15 +42,16 @@ public class EventManagerProp : MonoBehaviour
     public static event Action<Vector3> PlayerCollision;
     public static void onPlayerCollision(Vector3 axis)
     {
-        PlayerCollision.Invoke(axis);
+        PlayerCollision?.Invoke(axis);
     }
 
     /// <summary>
-    /// this dont work (code below)
+    /// Gets called, cannot guarantee every frame, but whenever the player's grounded state is assured
+    /// `grounded` is whether the player is currently grounded
     /// </summary>
-    public static event Action<Vector3> PlayerShoot;
-    public static void onPlayerShoot(Vector3 axis)
+    public static event Action<bool> PlayerGrounded;
+    public static void isPlayerGrounded(bool grounded)
     {
-        PlayerShoot.Invoke(axis);
+        PlayerGrounded?.Invoke(grounded);
     }
 }

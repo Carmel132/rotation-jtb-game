@@ -121,6 +121,11 @@ internal class Physics
         EventManagerProp.onPlayerCollision(axis);
     }
 
+    void invokePlayerGroundedEvent(bool grounded)
+    {
+        EventManagerProp.isPlayerGrounded(grounded);
+    }
+
     /// <summary>
     /// Computes the next KinematicFrame
     /// </summary>
@@ -146,8 +151,13 @@ internal class Physics
 
         if (wasVerticalCollision)
         {
-            invokePlayerCollisionEvent(Vector3.up * Mathf.Sign(velocity.y));
+            Vector3 collisionAxis = Vector3.up * Mathf.Sign(velocity.y);
+            invokePlayerCollisionEvent(collisionAxis);
         }
+
+        Debug.Log($"{wasVerticalCollision}, {velocity.y}");
+
+        invokePlayerGroundedEvent(wasVerticalCollision && velocity.y < 0);
 
         KinematicFrame ret = new KinematicFrame
         {
@@ -338,12 +348,19 @@ public class PlayerControllerComp : MonoBehaviour
         }
     }
 
+    void isPlayerGrounded(bool grounded)
+    {
+        isGrounded = grounded;
+    }
+
     void Start()
     {
         bounds = GetComponent<BoxCollider2D>().bounds;
         physics = new(gameObject, generateVerticesFromBoxCollider(bounds.extents));
 
-        EventManagerProp.PlayerCollision += onPlayerCollision;
+        //EventManagerProp.PlayerCollision += onPlayerCollision;
+        EventManagerProp.PlayerGrounded += isPlayerGrounded;
+
     }
 
     void Update()
