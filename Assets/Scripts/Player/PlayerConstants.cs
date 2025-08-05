@@ -19,7 +19,7 @@ public static class PlayerConstants
     /// <summary>
     /// The force of the jump (?)
     /// </summary>
-    public static float JUMP_FORCE { get; } = 20f;
+    public static float JUMP_FORCE { get; } = 14f;
     /// <summary>
     /// The Speed of dashing :thumbs up:
     /// </summary>

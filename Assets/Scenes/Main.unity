@@ -952,6 +952,7 @@ GameObject:
   - component: {fileID: 1618768415}
   - component: {fileID: 1618768419}
   - component: {fileID: 1618768421}
+  - component: {fileID: 1618768422}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -1140,6 +1141,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &1618768422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1618768414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d323211e90439e84a822b6904a1396b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
 --- !u!1 &1696573852
 GameObject:
   m_ObjectHideFlags: 0
@@ -1369,6 +1383,75 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ad3022a69cb9984f8ea30e3a5390163, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &4942094332186873956
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4115621196231869339, guid: e66fd50c71e485849aadd45c12211528, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -36.16
+      objectReference: {fileID: 0}
+    - target: {fileID: 4115621196231869339, guid: e66fd50c71e485849aadd45c12211528, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.47
+      objectReference: {fileID: 0}
+    - target: {fileID: 4115621196231869339, guid: e66fd50c71e485849aadd45c12211528, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4115621196231869339, guid: e66fd50c71e485849aadd45c12211528, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4115621196231869339, guid: e66fd50c71e485849aadd45c12211528, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4115621196231869339, guid: e66fd50c71e485849aadd45c12211528, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4115621196231869339, guid: e66fd50c71e485849aadd45c12211528, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4115621196231869339, guid: e66fd50c71e485849aadd45c12211528, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4115621196231869339, guid: e66fd50c71e485849aadd45c12211528, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4115621196231869339, guid: e66fd50c71e485849aadd45c12211528, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4541316993719289628, guid: e66fd50c71e485849aadd45c12211528, type: 3}
+      propertyPath: health
+      value: 60.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6594932639577603196, guid: e66fd50c71e485849aadd45c12211528, type: 3}
+      propertyPath: m_Name
+      value: CooldownEnemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 7124477147805948195, guid: e66fd50c71e485849aadd45c12211528, type: 3}
+      propertyPath: searchRadius
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7124477147805948195, guid: e66fd50c71e485849aadd45c12211528, type: 3}
+      propertyPath: attackTimer.duration
+      value: 2.15
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e66fd50c71e485849aadd45c12211528, type: 3}
 --- !u!1001 &6466550945721512523
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1501,3 +1584,4 @@ SceneRoots:
   - {fileID: 210012428}
   - {fileID: 7556538041607601849}
   - {fileID: 985750287}
+  - {fileID: 4942094332186873956}

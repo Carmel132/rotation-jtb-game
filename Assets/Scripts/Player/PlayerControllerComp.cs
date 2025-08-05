@@ -231,7 +231,6 @@ public class PlayerControllerComp : MonoBehaviour
     //Uh sorry carmel if this messes up ur code ngl - michael, 7/31
     FixedTimer dashTimer, dashCooldownTimer;
     Vector2 dashDirect;
-    bool canDash = true;
     bool hitGroundSinceDash = true;
 
     void buildStateMachine()
@@ -300,13 +299,10 @@ public class PlayerControllerComp : MonoBehaviour
 
     void applyJump()
     {
-        if (jumpInput && isGrounded)
-        {
-            Debug.Log("Jumping!");
-            GameManager.gm.PlayerJumpSFX();
-            velocity = new Vector3(velocity.x, PlayerConstants.JUMP_FORCE, velocity.z);
-            isGrounded = false;
-        }
+        GameManager.gm.PlayerJumpSFX();
+        velocity = new Vector3(velocity.x, PlayerConstants.JUMP_FORCE, velocity.z);
+        isGrounded = false;
+        
     }
     //Michael, 7/31
     //All that is left of what we were is what we have become - someone wise, probably
@@ -338,10 +334,6 @@ public class PlayerControllerComp : MonoBehaviour
         velocity = kf.velocity;
     }
 
-    void checkDashCooldownOver()
-    {
-    }
-
     void Start()
     {
         bounds = GetComponent<BoxCollider2D>().bounds;
@@ -358,7 +350,6 @@ public class PlayerControllerComp : MonoBehaviour
     {
         updateInputs();
 
-        checkDashCooldownOver();
         stateMachine.loop();
         KinematicFrame kf = physics.computeNextStep(velocity);
 

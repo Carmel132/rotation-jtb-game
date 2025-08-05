@@ -4,6 +4,7 @@ public class Bullet : MonoBehaviour
 {
     public float lifetime = 3f;
     public float speed = 20f;
+    public float damage = 10f;
 
     void Start()
     {
@@ -26,7 +27,7 @@ public class Bullet : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Enemy"))
+        if (collision.CompareTag("Enemy") || collision.CompareTag("EnemyProjectile"))
         {
             Debug.Log("hit enemy");
             Destroy(gameObject);

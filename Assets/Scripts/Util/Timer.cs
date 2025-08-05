@@ -5,9 +5,11 @@ using UnityEngine;
 /// <summary>
 /// Encapsulated a fixed time timer 
 /// </summary>
+[Serializable]
 public class FixedTimer
 {
-    public float duration { get; set; }
+    [SerializeField]
+    public float duration;
     public bool timePassed { get => Time.time >= lastTime + duration; }
     public void reset () => lastTime = Time.time;
 
