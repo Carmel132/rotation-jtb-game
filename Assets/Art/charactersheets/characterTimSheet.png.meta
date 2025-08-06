@@ -296,6 +296,50 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: characterTimSheet_8
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4a2f7da6329baf14ba2d5982284b6c7d
+      internalID: 538941474
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: characterTimSheet_9
+      rect:
+        serializedVersion: 2
+        x: 432
+        y: 0
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 51026fe19f37ec6429ab9a2494f641d7
+      internalID: 788038491
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -318,6 +362,8 @@ TextureImporter:
       characterTimSheet_5: 3148609776111621772
       characterTimSheet_6: 6306026885950608856
       characterTimSheet_7: -2436368366064621209
+      characterTimSheet_8: 538941474
+      characterTimSheet_9: 788038491
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

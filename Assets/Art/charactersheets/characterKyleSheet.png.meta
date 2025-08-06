@@ -296,6 +296,50 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: characterKyleSheet_8
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 71a1e3861f419324795d928872463a2c
+      internalID: 1091482854
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: characterKyleSheet_9
+      rect:
+        serializedVersion: 2
+        x: 432
+        y: 0
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a1f3120d32835564585ec100dd4367e2
+      internalID: 1610539141
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -318,6 +362,8 @@ TextureImporter:
       characterKyleSheet_5: -29908021418075894
       characterKyleSheet_6: 2603943092065597889
       characterKyleSheet_7: 2608706871444108993
+      characterKyleSheet_8: 1091482854
+      characterKyleSheet_9: 1610539141
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

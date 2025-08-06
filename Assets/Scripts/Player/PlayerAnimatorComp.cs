@@ -22,11 +22,16 @@ public class PlayerAnimatorComp : MonoBehaviour
     bool switchInput { set; get; }
     int currentSkin = 0;
 
+    bool dashing = false;
+    int dashDirection; //1 is forward, 0 is backward
+
     PlayerControllerComp playerController;
+    
 
     void Start()
     {
         playerController = GetComponent<PlayerControllerComp>();
+        
     }
 
     void Update()
@@ -35,6 +40,9 @@ public class PlayerAnimatorComp : MonoBehaviour
 
         animate(playerController.velocity, playerController.isGrounded);
         switchSkin();
+
+        
+
     }
 
     public void updateInputs()
@@ -46,6 +54,16 @@ public class PlayerAnimatorComp : MonoBehaviour
     {
         animator.runtimeAnimatorController = set.controller;
         shotgunSprite.sprite = set.shotgunSprite;
+    }
+
+    public void getDash(bool dash)
+    {
+        dashing = dash;
+    }
+
+    public void getDashDir(int dir)
+    {
+         dashDirection = dir;
     }
 
     void switchSkin()
@@ -67,5 +85,7 @@ public class PlayerAnimatorComp : MonoBehaviour
         animator.SetFloat("Speed", Mathf.Abs(velocity.x));
         animator.SetBool("Grounded", isGrounded);
         animator.SetFloat("HSpeed", velocity.y); //this is horizontal speed, animates jump/fall
+        animator.SetBool("Dash",dashing);
+        animator.SetInteger("DashDir",dashDirection);
     }
 }

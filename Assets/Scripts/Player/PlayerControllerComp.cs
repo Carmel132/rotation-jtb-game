@@ -196,7 +196,7 @@ internal class Physics
 }
 
 
-enum PlayerStates
+public enum PlayerStates
 {
     Neutral,
     Dashing,
@@ -216,6 +216,9 @@ public class PlayerControllerComp : MonoBehaviour
 
     bool jumpInput { set; get; }
     bool dashInput { set; get; }
+
+
+    PlayerAnimatorComp playerAnimatorComp;
 
     
     [SerializeField]
@@ -250,6 +253,7 @@ public class PlayerControllerComp : MonoBehaviour
             dashTimer.reset();
             dashDirect = new Vector2(horizontalInputRaw, verticalInputRaw);
             applyDash();
+            playerAnimatorComp.getDash(true);
             GameManager.gm.PlayerDashSFX();
 
         }, () => 
@@ -257,6 +261,7 @@ public class PlayerControllerComp : MonoBehaviour
             dashCooldownTimer.reset();
             velocity = Vector3.zero;
             hitGroundSinceDash = false;
+            playerAnimatorComp.getDash(false);
         }, null);
 
         stateMachine.addNode(PlayerStates.Jumping, applyJump, null, null);
@@ -295,6 +300,17 @@ public class PlayerControllerComp : MonoBehaviour
     void applyDash()
     {
         velocity = new Vector3(dashDirect.x, dashDirect.y).normalized * PlayerConstants.DASHING_SPEED;
+        if ((dashDirect.x > 0 && transform.localScale.x > 0) || (dashDirect.x < 0 && transform.localScale.x < 0))
+        {
+            playerAnimatorComp.getDashDir(1); //1 is forward, 0 is backward
+        }
+        else
+        {
+            playerAnimatorComp.getDashDir(0);
+        }
+
+
+
     }
 
     void applyJump()
@@ -344,6 +360,8 @@ public class PlayerControllerComp : MonoBehaviour
         dashCooldownTimer = new(PlayerConstants.DASHING_COOLDOWN);
         jumpGroundedCooldown = new(0.1f);
         buildStateMachine();
+
+        playerAnimatorComp = GetComponent<PlayerAnimatorComp>();
     }
 
     void Update()

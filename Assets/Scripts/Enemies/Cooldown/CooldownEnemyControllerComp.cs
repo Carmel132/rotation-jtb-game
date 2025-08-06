@@ -52,7 +52,7 @@ public class CooldownEnemyControllerComp : MonoBehaviour
     void Update()
     {
         stateMachine.loop();
-        Debug.Log(stateMachine.getCurrentNode());
+        //Debug.Log(stateMachine.getCurrentNode());
     }
 
     void buildStateMachine()
