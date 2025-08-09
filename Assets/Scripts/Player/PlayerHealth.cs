@@ -11,6 +11,11 @@ public class PlayerHealth : MonoBehaviour
         {
             health -= collision.GetComponent<EnemyShootableHitbox>().getDamage();
         }
+        else if (collision.CompareTag("EnemyHitbox"))
+        {
+            health -= collision.GetComponent<EnemyHitbox>().getDamage();
+            Debug.Log("hitbox");
+        }
     }
 
     public void Update()

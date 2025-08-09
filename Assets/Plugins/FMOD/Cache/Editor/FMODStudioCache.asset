@@ -27,6 +27,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &-7666241172393572652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Button
+  m_EditorClassIdentifier: 
+  Path: event:/Button
+  Guid:
+    Data1: 99181890
+    Data2: 1283933409
+    Data3: -2139376489
+    Data4: 1798824619
+  Banks:
+  - {fileID: -7652107451744820524}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &-7652107451744820524
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42,11 +69,38 @@ MonoBehaviour:
   Path: Assets/FMOD Banks/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 638899511210368167
+  lastModified: 638902872010621572
   FileSizes:
   - Name: Desktop
-    Value: 25504
+    Value: 116192
   Exists: 1
+--- !u!114 &-5674526771379014274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Coin
+  m_EditorClassIdentifier: 
+  Path: event:/Coin
+  Guid:
+    Data1: -1658257555
+    Data2: 1219524317
+    Data3: -731452493
+    Data4: -659560746
+  Banks:
+  - {fileID: -7652107451744820524}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &-3052262464743490995
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -97,13 +151,16 @@ MonoBehaviour:
   - {fileID: -3052262464743490995}
   - {fileID: 350460222830019235}
   - {fileID: 523436270285714938}
+  - {fileID: -7666241172393572652}
+  - {fileID: 7774546624131938690}
+  - {fileID: -5674526771379014274}
   EditorParameters: []
   MasterBanks:
   - {fileID: 1980860885566027309}
   StringsBanks:
   - {fileID: 4072604310350220643}
   cacheVersion: 131848
-  cacheTime: 638899511210368167
+  cacheTime: 638902872010621572
   SerializableEventsDict:
   - key: event:/Player SFX/Player Jump
     index: 0
@@ -115,6 +172,12 @@ MonoBehaviour:
     index: 3
   - key: event:/Music/Title Screen
     index: 4
+  - key: event:/Button
+    index: 5
+  - key: event:/Lizard
+    index: 6
+  - key: event:/Coin
+    index: 7
 --- !u!114 &350460222830019235
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,7 +247,7 @@ MonoBehaviour:
   Path: Assets/FMOD Banks/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638899511210127323
+  lastModified: 638902862608493431
   FileSizes:
   - Name: Desktop
     Value: 1074
@@ -204,7 +267,7 @@ MonoBehaviour:
   Path: Assets/FMOD Banks/Desktop/Music.bank
   Name: Music
   StudioPath: bank:/Music
-  lastModified: 638899511210337794
+  lastModified: 638902859576657758
   FileSizes:
   - Name: Desktop
     Value: 901312
@@ -224,10 +287,10 @@ MonoBehaviour:
   Path: Assets/FMOD Banks/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638899511210137240
+  lastModified: 638902862608493431
   FileSizes:
   - Name: Desktop
-    Value: 1062
+    Value: 1172
   Exists: 1
 --- !u!114 &5662436807798316308
 MonoBehaviour:
@@ -247,6 +310,33 @@ MonoBehaviour:
     Data2: 1299179384
     Data3: 439465365
     Data4: 1403647752
+  Banks:
+  - {fileID: -7652107451744820524}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &7774546624131938690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Lizard
+  m_EditorClassIdentifier: 
+  Path: event:/Lizard
+  Guid:
+    Data1: 883482854
+    Data2: 1338004599
+    Data3: -541666174
+    Data4: -983348114
   Banks:
   - {fileID: -7652107451744820524}
   IsStream: 0

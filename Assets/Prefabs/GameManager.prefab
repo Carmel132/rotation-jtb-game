@@ -72,6 +72,27 @@ MonoBehaviour:
       Data3: -874252403
       Data4: 1256607700
     Path: event:/Player SFX/Player Shotgun
+  button:
+    Guid:
+      Data1: 99181890
+      Data2: 1283933409
+      Data3: -2139376489
+      Data4: 1798824619
+    Path: event:/Button
+  coin:
+    Guid:
+      Data1: -1658257555
+      Data2: 1219524317
+      Data3: -731452493
+      Data4: -659560746
+    Path: event:/Coin
+  lizard:
+    Guid:
+      Data1: 883482854
+      Data2: 1338004599
+      Data3: -541666174
+      Data4: -983348114
+    Path: event:/Lizard
   titleScreen:
     Guid:
       Data1: 1274293054
@@ -79,3 +100,4 @@ MonoBehaviour:
       Data3: -319615075
       Data4: -1171169764
     Path: event:/Music/Title Screen
+  frameCap: 0

@@ -7,6 +7,10 @@ TagManager:
   - Enemy
   - Bullet
   - EnemyProjectile
+  - EnemyHitbox
+  - Button
+  - Coin
+  - LizardButton
   layers:
   - Default
   - TransparentFX

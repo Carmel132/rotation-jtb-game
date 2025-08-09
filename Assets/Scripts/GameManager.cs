@@ -15,8 +15,13 @@ public class GameManager : MonoBehaviour
         playerJump,
         playerShoot;
 
-    public  EventReference titleScreen;
+    public EventReference button;
+    public EventReference coin;
+    public EventReference lizard;
+    public EventReference titleScreen;
     private EventInstance titleScreenInstance;
+
+    public int frameCap;
 
     private void Awake()
     {
@@ -30,8 +35,14 @@ public class GameManager : MonoBehaviour
             gm = this;
             DontDestroyOnLoad(gameObject);
             titleScreenInstance = RuntimeManager.CreateInstance(titleScreen);
-            titleScreenInstance.start();
+            // titleScreenInstance.start();   uncomment when actually title screen exists
         }
+    }
+
+    private void Start()
+    {
+        // function to limit fps
+        // Application.targetFrameRate = frameCap;
     }
 
     // sfx functions
@@ -53,5 +64,20 @@ public class GameManager : MonoBehaviour
     public void PlayerShootSFX()
     {
         RuntimeManager.PlayOneShot(playerShoot);
+    }
+
+    public void LizardSFX()
+    {
+        RuntimeManager.PlayOneShot(lizard);
+    }
+
+    public void ButtonSFX()
+    {
+        RuntimeManager.PlayOneShot(button);
+    }
+
+    public void CoinSFX()
+    {
+        RuntimeManager.PlayOneShot(coin);
     }
 }
